@@ -2,6 +2,8 @@ import os
 from rsFunctions import *
 
 import dataRecover
+import readCN
+
 
 #
 def presolve(path):
@@ -13,31 +15,10 @@ def presolve(path):
     file.close()
 
 
-def read_circle_number(path):
-    cn_path = os.path.dirname(path) + '/circleNumber.txt'
-    if os.path.exists(cn_path):
-        cn = open(cn_path, 'r')
-        circle_number = int(cn.read())
-        cn.close()
-        return circle_number
-    else:
-        cn = open(cn_path, 'w')
-        cn.write('0')
-        cn.close()
-        return 0
-
-def write_circle_number(path, circle_number):
-    cn_path = os.path.dirname(path) + '/circleNumber.txt'
-    cn = open(cn_path, 'w')
-    cn.write(str(circle_number))
-    cn.close()
-
-
-
 def split(path):
-    circle_number = read_circle_number(path)
     current_node = os.path.dirname(os.path.dirname(path))
     file_name = os.path.basename(path)
+    circle_number = readCN.read_current_circle_number(current_node)
 
     total_size = os.path.getsize(path)
     part_size = int((total_size) / 6)
@@ -62,15 +43,15 @@ def split(path):
     # q_parity
     dataRecover.recover_q(circle_number, current_node, file_name, partArr)
 
-    # circle_number++
+    readCN.write_circle_number(current_node, file_name, circle_number)
     circle_number = (circle_number + 1) % 8
-    write_circle_number(path, circle_number)
+    readCN.write_current_circle_number(current_node, circle_number)
+    os.remove(path)
 
-
-
-path = '../Nodes/node_1/buffer/xrp.pdf'
-split(path)
 
 def save_to_disk(path):
     presolve(path)
     split(path)
+
+path = '../Nodes/node_1/buffer/CE7490_Pre_Analysis of XRP.pdf'
+save_to_disk(path)

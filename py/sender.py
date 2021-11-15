@@ -26,13 +26,13 @@ def sender(file_name):
     node_list = nodeChoose.nodeChoose()
 
     # File will be sent to main node first, then to backup node.
-    transfer_file('../upload/' + file_name, '../Nodes/' + node_list[0] + '/buffer')
+    transfer_file('./upload/' + file_name, './Nodes/' + node_list[0] + '/buffer')
 
     # if file has been transferred to main node, then copy it three time as backups
-    if os.path.exists('../Nodes/' + node_list[0] + '/buffer/' + file_name):
+    if os.path.exists('./Nodes/' + node_list[0] + '/buffer/' + file_name):
         for i in range(1, 4):
-            copy_file('../Nodes/' + node_list[0] + '/buffer/' + file_name, '../Nodes/' + node_list[i] + '/buffer/' + file_name)
+            copy_file('./Nodes/' + node_list[0] + '/buffer/' + file_name, './Nodes/' + node_list[i] + '/buffer/' + file_name)
 
     # return info
 
-sender('xrp.pdf')
+# sender('xrp.pdf')

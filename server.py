@@ -2,10 +2,10 @@
 # coding=utf-8
 from flask import Flask, request, Response, render_template as rt
 import os
+import sys
+
 sys.path.append('py')
-
-
-sys.path.append('./py')
+import sender
 
 
 app = Flask(__name__)
@@ -29,6 +29,7 @@ def upload_part():  # 接收前端上传的一个分片
 @app.route('/file/merge', methods=['GET'])
 def upload_success():  # 按序读出分片内容，并写入新文件
     target_filename = request.args.get('filename')  # 获取上传文件的文件名
+    print(target_filename)
     task = request.args.get('task_id')  # 获取文件的唯一标识符
     chunk = 0  # 分片序号
     with open('./upload/%s' % target_filename, 'wb') as target_file:  # 创建新文件
@@ -45,7 +46,7 @@ def upload_success():  # 按序读出分片内容，并写入新文件
 
     print('success')
     # record filename
-    # sender()
+    sender.sender(target_filename)
     # node_thread(info)
     return rt('./index.html')
 
