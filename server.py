@@ -62,8 +62,11 @@ def upload_success():  # 按序读出分片内容，并写入新文件
 
 @app.route('/file/list', methods=['GET'])
 def file_list():
-    files = os.listdir('./upload/')  # 获取文件目录
-    # files = ['a', 'b', 'c']
+    # files = os.listdir('./upload/')  # 获取文件目录
+    with open('./chunk.json', 'r') as f:
+        data = json.load(f)
+    f.close()
+    files = data['file_list']
     files = map(lambda x: x if isinstance(x, str) else x.encode(), files)  # 注意编码
     return rt('./list.html', files=files)
 
@@ -105,11 +108,6 @@ def receive():
     return storage_path
 
 
-# meta management
-# meta_info = dict(id=_id,fileid=fileid,
-#                      binary_path=_binary_path,meta=_meta,
-#                      node_id=_node_id)
-
 error_times = 0
 
 def ping():
@@ -135,7 +133,15 @@ def ping():
             if error_times >= 3:
                 print('node_%s is dead' %i)
                 if is_master_node(i):
-                    change_master_node(i)
+                    node_for_rebuild, saved_file_list, node_for_send = change_master_node(i)
+
+                    # rebuild
+                    for x in range(0, len(saved_file_list)):
+                        filenamenode = saved_file_list[i] + '+' + str(node_for_rebuild)
+                        rebuild_link = 'http://127.0.0.1:500%s/rebuild/' %node_for_send
+                        requests.get(rebuild_link + filenamenode)
+
+
                 else:
                     with open('./node_info.json', 'r') as f:
                         data = json.load(f)
@@ -144,6 +150,22 @@ def ping():
                     with open('./node_info.json', 'w') as fw:
                         # change status. 1 represents activate; 0 represents inactivate
                         data['node_%s' %i]['status'] = 0
+                        saved_file_list = data['node_%s' %i]['saved_file']
+                        node_for_rebuild = find_free_node()
+
+                        # find this i belongs to which master node
+                        for x in range(0, 3):
+                            t = data['master_node'][x]
+                            if i in data['node_%s' %t]:
+                                node_for_send = t
+
+                        # rebuild
+                        for x in range(0, len(saved_file_list)):
+                            filenamenode = saved_file_list[i] + '+' + str(node_for_rebuild)
+                            rebuild_link = 'http://127.0.0.1:500%s/rebuild/' %node_for_send
+                            requests.get(rebuild_link + filenamenode)
+
+
                         json_str = json.dumps(data)
                         fw.write(json_str)
                     fw.close()
@@ -170,21 +192,38 @@ def change_master_node(num):
         data = json.load(f)
     f.close()
 
-    print(data['node_%s' %num]['backup_node'])
+    # print(data['node_%s' %num]['backup_node'])
 
     if data['node_%s' %num]['backup_node']:
         with open('./node_info.json', 'w') as fw:
-            # change status. 1 represents activate; 0 represents inactivate
+            # change status. 1 represents activate; 0 represents inactivate; 2 represents unused
             data['node_%s' %num]['status'] = 0
+            file_list = data['node_%s' %num]['saved_file']
+            data['node_%s' %num]['saved_file'] = []
             backup_num = data['node_%s' %num]['backup_node'][0]
             data['node_%s' %num]['backup_node'].remove(backup_num)
             data['master_node'].remove(num)
             data['master_node'].append(backup_num)
+            node_for_rebuild = find_free_node()
+            data['node_%s' %backup_num]['backup_node'].append(node_for_rebuild)
             json_str = json.dumps(data)
             fw.write(json_str)
         fw.close()
+        return node_for_rebuild, saved_file_list, backup_num
     else:
-        print('damaged totally')
+        print('node_%s is damaged' %num)
+
+
+# find free node
+def find_free_node():
+    with open('./node_info.json', 'r') as f:
+        data = json.load(f)
+    f.close()
+
+    for i in range(1, 14):
+        if data['node_%s' %i]['status'] = 2:
+            return i
+
 
 
 if __name__ == '__main__':

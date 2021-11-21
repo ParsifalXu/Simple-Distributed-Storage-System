@@ -29,10 +29,11 @@ def resource_update(node_num, filename, status):
     size = os.path.getsize('./upload/' + filename)
 
     with open('./node_info.json', 'w') as fw:
-        # change status. 1 represents activate; 0 represents inactivate
         if status == 1:
+            data['node_%s' %node_num]['saved_file'].append(filename)
             temp_resource = data['node_%s' %node_num]['resource'] - size
         elif status == 0:
+            data['node_%s' %node_num]['saved_file'].remove(filename)
             temp_resource = data['node_%s' %node_num]['resource'] + size
 
         data['node_%s' %node_num]['resource'] = temp_resource

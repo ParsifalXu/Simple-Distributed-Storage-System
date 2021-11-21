@@ -91,7 +91,15 @@ def delete(filename):
         fw.close()
 
 
-
+@app.route('/rebuild/<filenamenode>', methods = ['GET'])
+def rebuild_node():
+    temp = filenamenode.split('+')
+    filename = temp[0]
+    node = temp[1]
+    rebuildFromDisk.rebuild_from_disk(filename)
+    files = {'file_content': open('./Storage/buffer/' + filename, 'rb')}
+    requests.post('http://127.0.0.1:500%s/save' %node, files = files)
+    saveToDisk.save_to_disk(filename)
 
 
 if __name__ == '__main__':
