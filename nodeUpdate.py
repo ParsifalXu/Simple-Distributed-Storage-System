@@ -62,9 +62,9 @@ def resource_update(node_num, filename, status):
         del chunk[filename]
 
 
-    with open('./chunk.json', 'r') as fcw:
+    with open('./chunk.json', 'w') as fcw:
         json_str = json.dumps(chunk)
-        fw.write(json_str)
+        fcw.write(json_str)
     fcw.close()
 
 

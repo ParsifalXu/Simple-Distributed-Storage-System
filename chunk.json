@@ -1,1 +1,1 @@
-{"file_list": []}
+{"file_list": ["AUC.png", "framework.pdf", "path.gif"], "AUC.png": {"master_node": 13, "size": 54043, "backup_nodes": [13]}, "framework.pdf": {"master_node": 5, "size": 50748, "backup_nodes": [6, 7, 8]}, "path.gif": {"master_node": 1, "size": 28604235, "backup_nodes": [2, 3, 4]}}

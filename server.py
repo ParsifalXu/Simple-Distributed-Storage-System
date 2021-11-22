@@ -51,22 +51,24 @@ def upload_success():  # 按序读出分片内容，并写入新文件
     # file_size = os.path.getsize('./upload/' + target_filename)
 
     node_num = nodeUpdate.node_choose()
+    print('node_num is %s' %node_num)
     sender.send(node_num, target_filename)
+
     nodeUpdate.resource_update(node_num, target_filename, 1)
 
 
-    os.remove('./upload/' + target_filename)
+    # os.remove('./upload/' + target_filename)
     # node_thread(info)
     return rt('./index.html')
 
 
 @app.route('/file/list', methods=['GET'])
 def file_list():
-    # files = os.listdir('./upload/')  # 获取文件目录
+    files = os.listdir('./upload/')  # 获取文件目录
     with open('./chunk.json', 'r') as f:
         data = json.load(f)
     f.close()
-    files = data['file_list']
+    # files = data['file_list']
     files = map(lambda x: x if isinstance(x, str) else x.encode(), files)  # 注意编码
     return rt('./list.html', files=files)
 
@@ -151,7 +153,9 @@ def ping():
                         # change status. 1 represents activate; 0 represents inactivate
                         data['node_%s' %i]['status'] = 0
                         saved_file_list = data['node_%s' %i]['saved_file']
-                        node_for_rebuild = find_free_node()
+                        for n in range(1, 14):
+                            if data['node_%s' %n]['status'] == 2:
+                                node_for_rebuild = n
 
                         # find this i belongs to which master node
                         for x in range(0, 3):
@@ -192,37 +196,40 @@ def change_master_node(num):
         data = json.load(f)
     f.close()
 
-    # print(data['node_%s' %num]['backup_node'])
+    print(data['node_%s' %num]['backup_node'])
 
     if data['node_%s' %num]['backup_node']:
         with open('./node_info.json', 'w') as fw:
             # change status. 1 represents activate; 0 represents inactivate; 2 represents unused
             data['node_%s' %num]['status'] = 0
             file_list = data['node_%s' %num]['saved_file']
+            print(file_list)
+            print('1')
             data['node_%s' %num]['saved_file'] = []
+            print('2')
             backup_num = data['node_%s' %num]['backup_node'][0]
+            print('3')
             data['node_%s' %num]['backup_node'].remove(backup_num)
             data['master_node'].remove(num)
             data['master_node'].append(backup_num)
-            node_for_rebuild = find_free_node()
+            print('4')
+            for n in range(1, 14):
+                if data['node_%s' %n]['status'] == 2:
+                    node_for_rebuild = n
+
+            saved_file_list = data['node_%s' %num]['saved_file']
+
+            print('5')
             data['node_%s' %backup_num]['backup_node'].append(node_for_rebuild)
+            print('6')
             json_str = json.dumps(data)
             fw.write(json_str)
         fw.close()
+        print('success')
         return node_for_rebuild, saved_file_list, backup_num
     else:
         print('node_%s is damaged' %num)
 
-
-# find free node
-def find_free_node():
-    with open('./node_info.json', 'r') as f:
-        data = json.load(f)
-    f.close()
-
-    for i in range(1, 14):
-        if data['node_%s' %i]['status'] = 2:
-            return i
 
 
 
