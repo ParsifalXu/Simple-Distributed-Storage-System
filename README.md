@@ -134,6 +134,108 @@ upload files
 
 
 
+<details markdown="1">
+<summary>About the command merge files...</summary>
+
+The command `/file/merge` refers to:
+read chunk content and write into new file, 
+* `filename`: make the server know hot to save it, always a unique chunk
+* `task_id`: the obtain unique id.
+*  "save into ./upload/{filename}  
+*  "render index.html"
+
+</details>
+
+
+
+
+
+
+<details markdown="1">
+<summary>About the command List files...</summary>
+
+The command `/file/list` refers to:
+read chunk.json content and return the filelist, 
+* `chunk.json`: should contain file_list
+   * `file_list`: the specifical field of chunk.json, contain the filelist of it .
+*  "render list.html"
+
+</details>
+
+
+
+
+<details markdown="1">
+<summary>About the command download files...</summary>
+
+The command `/file/download/{filename}` refers to:
+read http://127.0.0.1:5001/download/{filename} content and render to browser, 
+* `filename`: the specifical path to node download it .
+*  "render application/octet-stream"
+
+</details>
+
+
+
+<details markdown="1">
+<summary>About the command delete files...</summary>
+
+The command `/file/delete/{filename}` refers to:
+read http://127.0.0.1:5001/delete/{filename} content and render to browser, 
+* `filename`: the specifical path to node download it .
+*  "render 0 delete sucess and 1 for error occur"
+
+</details>
+
+
+
+
+<details markdown="1">
+<summary>Receive files from nodes...</summary>
+
+The command `/file/receive/` refers to:
+read http://127.0.0.1:5001/receive/ content and render to browser, 
+* `file_content`: the bianry byte encoder from javascript encode it to form-data  .
+* `filename`: keep filename into node system as original
+*  "render 0 upload sucess and 1 for error occur"
+
+</details>
+
+
+
+<details markdown="1">
+<summary>ping each nodes...</summary>
+
+The command `/file/receive/` refers to:
+read http://127.0.0.1:500{i}/ping/ content and render to browser, 
+* `i`: the bianry byte encoder from javascript encode it to form-data  .
+* `error_times`: global variables   the times of error happened
+*  " change status. 1 represents activate; 0 represents inactivate
+  find this i belongs to which master node
+  will not influence current service, do alarm
+ "
+</details>
+
+
+
+
+
+<details markdown="1">
+<summary>whether the node is master node...</summary>
+* `master_node`:  field of node_info.json .
+*  "render 0 upload sucess and 1 for error occur"
+
+</details>
+
+
+<details markdown="1">
+<summary>whether the node is master node...</summary>
+* `master_node`:  field of node_info.json .
+*  "render 0 upload sucess and 1 for error occur"
+
+</details>
+
+
 
 ## Storage
 
