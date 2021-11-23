@@ -29,26 +29,23 @@ def upload_part():  # receive an uploaded chunk
 
 
 @app.route('/file/merge', methods=['GET'])
-def upload_success():  # 按序读出分片内容，并写入新文件
-
-    target_filename = request.args.get('filename')  # 获取上传文件的文件名
-    task = request.args.get('task_id')  # 获取文件的唯一标识符
-    chunk = 0  # 分片序号
-    with open('./upload/%s' % target_filename, 'wb') as target_file:  # 创建新文件
+def upload_success():  # read chunk content and write into new file
+    target_filename = request.args.get('filename')  # get uploaded file name
+    task = request.args.get('task_id')  # obatin unique id
+    chunk = 0  # chunk order
+    with open('./upload/%s' % target_filename, 'wb') as target_file:  # build a new file
         while True:
             try:
                 filename = './upload/%s%d' % (task, chunk)
-                source_file = open(filename, 'rb')  # 按序打开每个分片
-                target_file.write(source_file.read())  # 读取分片内容写入新文件
+                source_file = open(filename, 'rb')  # read each chunk in order
+                target_file.write(source_file.read())  # read content of each chunk and write into new file
                 source_file.close()
             except Exception:
                 break
             chunk += 1
-            os.remove(filename)  # 删除该分片，节约空间
+            os.remove(filename)  # delete chunk to save space
 
     print('%s has been upload successfully' %target_filename)
-
-    # file_size = os.path.getsize('./upload/' + target_filename)
 
     node_num = nodeUpdate.node_choose()
     print('node_num is %s' %node_num)
@@ -57,18 +54,17 @@ def upload_success():  # 按序读出分片内容，并写入新文件
     nodeUpdate.resource_update(node_num, target_filename, 1)
 
 
-    # os.remove('./upload/' + target_filename)
-    # node_thread(info)
+    os.remove('./upload/' + target_filename)
     return rt('./index.html')
 
 
 @app.route('/file/list', methods=['GET'])
 def file_list():
-    files = os.listdir('./upload/')  # 获取文件目录
+    # files = os.listdir('./upload/')  # 获取文件目录
     with open('./chunk.json', 'r') as f:
         data = json.load(f)
     f.close()
-    # files = data['file_list']
+    files = data['file_list']
     files = map(lambda x: x if isinstance(x, str) else x.encode(), files)  # 注意编码
     return rt('./list.html', files=files)
 
@@ -95,9 +91,12 @@ def file_delete(filename):
     res = requests.get('http://127.0.0.1:5001/delete/' + filename)
     print('%s has been deleted' %filename)
 
-    file_size = nodeUpdate.get_file_size()
+    file_size = nodeUpdate.get_file_size(filename)
+    # 先写死
+    node_num = 1
+    nodeUpdate.resource_update(node_num, filename, 0)
 
-    nodeUpdate.resource_update(node_num, file_size, 0)
+    return rt('./index.html')
 
 
 @app.route('/receive', methods = ['GET', 'POST'])
@@ -113,7 +112,7 @@ def receive():
 error_times = 0
 
 def ping():
-    for i in range(1, 3):
+    for i in range(1, 5):
         try:
             res = requests.post('http://127.0.0.1:500%s/ping' %(i))
             res_temp = json.loads(res.text)
@@ -229,8 +228,6 @@ def change_master_node(num):
         return node_for_rebuild, saved_file_list, backup_num
     else:
         print('node_%s is damaged' %num)
-
-
 
 
 if __name__ == '__main__':

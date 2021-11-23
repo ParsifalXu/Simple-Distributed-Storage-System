@@ -25,7 +25,8 @@ def resource_update(node_num, filename, status):
     with open('./node_info.json', 'r') as f:
         data = json.load(f)
     f.close()
-
+    print('==========')
+    print(filename)
     size = os.path.getsize('./upload/' + filename)
 
     with open('./node_info.json', 'w') as fw:
@@ -75,6 +76,8 @@ def get_file_size(filename):
     with open('./chunk.json', 'r') as f:
         data = json.load(f)
     f.close()
+
+
 
     if filename in data['file_list']:
         return data[filename]['size']
