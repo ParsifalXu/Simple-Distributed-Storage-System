@@ -28,8 +28,11 @@ You can explore the bullit from either:
 
 
 Basically it turns this:
-![btrfs_sub_list](https://user-images.githubusercontent.com/218502/53362053-99564e00-3939-11e9-9072-1d9ef617971f.PNG)
+![btrfs_sub_list](upload/framework2.png)
 
+* we set up a super node to interact with client
+and manage different request from users. 
+we have three replica nodes for each master node, as shown in the orange node and blue nodes surrounded by the dashed circle in the Fig. For nodes other than super node, we employ Redundant Array of Independent Disks 6(RAID 6) to improve storage performance or reduce redundancy, or both. Meanwhile, for the services of each node to be more efficient, super node maintain a node info.json to record each node as well as the resources it has to try to choose nodes with more resources to save files.
 
 
 ## Installation Guide
@@ -54,7 +57,7 @@ To use Python from the environment you just created, activate the environment wi
 conda activate RAID6
 ```
 
-### or Install from req
+### or Install from pip
 
 ```
 pip install -r requirement.txt
@@ -63,8 +66,90 @@ pip install -r requirement.txt
 
 # Usage
 
-## storage
+## Init 
+
+Get into ./Nodes/node_1. node_2, node_3, node_4... as the same (you can only open 1 to 4 for test)
+   
+```
+  cd  ./Nodes/node_1
+
+```
+
+## Init the super node
+```
+Usage:   to start the super node_
+  
+   python ./superserver.py runserver
+   -h, --help  
+```
+
+
+### Run it
+
+Run the server with:
+
+<div class="termy">
+
+```console
+$ python ./superserver.py runserver
+
+INFO:     Uvicorn running on http://127.0.0.1:5000 (Press CTRL+C to quit)
+INFO:     Started reloader process [28720]
+INFO:     Started server process [28722]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+```
+
+</div>
+
+<details markdown="1">
+<summary>About the command <code>superserver.py runserver</code>...</summary>
+
+The command `python superserver.py` refers to:
+
+* `main`: the file `main.py` (the Python "module").
+* `app`: the object created inside of `main.py` with the line `app = Flask()`.
+* `--reload`: make the server restart after code changes. Only do this for development. depend on you webserve. [Optional]
+
+
+</details>
+
+
+
+<details markdown="1">
+<summary>About the command upload files...</summary>
+
+The command `python superserver.py` refers to:
+upload files
+* `task_id`: the obtain unique id.
+* `chunk`: obatin chunk order `int of Flask`.
+    filename = '%s%s' % (task, chunk)  # struct unique chunk
+* `filename`: make the server know hot to save it, always a unique chunk
+*  "save into ./upload/{filename}  
+*  "render index.html"
+
+</details>
+
+
+
+
+
+
+## Storage
+
 store and access abstract “data objects” across storage nodes using RAID-6 for fault-tolerance
+```
+Usage:  Get into ./Nodes/node_1. node_2, node_3, node_4... as the same (you can only open 1 to 4 for test)
+
+If no [mountpoint] is specified, display info for all btrfs filesystems.
+
+  -h, --help                 display this message
+  -d, --debug                enable debug output
+  -q, --quiet                silence the quota disabled & quota rescan warnings
+      --color=WHEN           colorize the output; WHEN can be 'never', 'always',
+                               or 'auto' (default, colorize if STDOUT is a term)
+  -n, --no-color             synonym of --color=never
+```
 
 ## mechanisms to determine failure of storage nodes
 
@@ -146,7 +231,6 @@ SIZE can be a number (in bytes), or a number followed by k, M, G, T or P.
 
  ## Operating Steps
 
- * Get into ./Nodes/node_1. node_2, node_3, node_4... as the same (you can only open 1 to 4 for test)
 
  * 'python ./server.py runserver' (Start the server, different nodes under same 127.0.0.1 with different port from 1 to 13)
 
