@@ -242,118 +242,29 @@ read http://127.0.0.1:500{i}/ping/ content and render to browser,
 store and access abstract “data objects” across storage nodes using RAID-6 for fault-tolerance
 ```
 Usage:  Get into ./Nodes/node_1. node_2, node_3, node_4... as the same (you can only open 1 to 4 for test)
+    
+open  'http://127.0.0.1:500%s/save' %node
 
-If no [mountpoint] is specified, display info for all btrfs filesystems.
+If no [node] is specified, save information into node_i filesystems.
 
+node_info.json
   -h, --help                 display this message
   -d, --debug                enable debug output
-  -q, --quiet                silence the quota disabled & quota rescan warnings
-      --color=WHEN           colorize the output; WHEN can be 'never', 'always',
-                               or 'auto' (default, colorize if STDOUT is a term)
-  -n, --no-color             synonym of --color=never
-```
-
-## mechanisms to determine failure of storage nodes
-
-
-## rebuild of the lost redundancy at a replacement storage node
-
-
-
-## RAID-6 data recovery
-
-
-## analysis, synchronization mechanism and 
-
-## disaster tolerance and recovery
-
-
-## RAID-6 Data Recovery Analysis
-
+  -node_info.json            quota of backup_node  & quota the save node 
 
 ```
-Usage: btrfs-list [options] [mountpoint]
 
-If no [mountpoint] is specified, display info for all btrfs filesystems.
+# Other Features 
 
-  -h, --help                 display this message
-  -d, --debug                enable debug output
-  -q, --quiet                silence the quota disabled & quota rescan warnings
-      --color=WHEN           colorize the output; WHEN can be 'never', 'always',
-                               or 'auto' (default, colorize if STDOUT is a term)
-  -n, --no-color             synonym of --color=never
-  -H, --no-header            hide header from output
-
-  -s, --hide-snap            hide all snapshots
-  -S, --snap-only            only show snapshots
-      --snap-min-excl SIZE   hide snapshots whose exclusively allocated extents
-                               take up less space than SIZE
-      --snap-max-excl SIZE   hide snapshots whose exclusively allocated extents
-                               take up more space than SIZE
-  -f, --free-space           only show free space on the filesystem
-
-  -p, --profile PROFILE      consider data profile as 'dup', 'single', 'raid0',
-                               'raid1', 'raid10', 'raid5' or 'raid6', for
-                               realfree space calculation (default: autodetect)
-
-      --show-all             show all information for each item
-      --show-gen             show generation of each item
-      --show-cgen            show generation at creation of each item
-      --show-id              show id of each item
-      --show-uuid            show uuid of each item
-
-SIZE can be a number (in bytes), or a number followed by k, M, G, T or P.
-```
+- mechanisms to determine failure of storage nodes
+- rebuild of the lost redundancy at a replacement storage node
+- RAID-6 data recovery
+- Analysis, synchronization mechanism and 
+- Disaster tolerance and recovery
+- RAID-6 Data Recovery Analysis
 
 
-
-
-```
-Server Usage: 
- python  ./server.py runserver  [options] [mountpoint]
-
- # Start the server, different nodes under same 127.0.0.1 with different port from 1 to 13
- 
-[options] [mountpoint]
-
-If no [mountpoint] is specified, display info for all btrfs filesystems.
-
-  -h, --help                 display this message
-  -d, --debug                enable debug output
-  -q, --quiet                silence the quota disabled & quota rescan warnings
-      --color=WHEN           colorize the output; WHEN can be 'never', 'always',
-                               or 'auto' (default, colorize if STDOUT is a term)
-  -p, --port              different port number
-
-SIZE can be a number (in bytes), or a number followed by k, M, G, T or P.
-```
-
-
-
-
- ## Operating Steps
-
-
- * 'python ./server.py runserver' (Start the server, different nodes under same 127.0.0.1 with different port from 1 to 13)
-
- * Go back to master folder ./ and input 'python ./superserver.py runserver' to start the super node_
-
- * Open browser and get access to 'http://127.0.0.1:5000'
-
- * click 'Select File' to select file and upload it
-
- * 'http://127.0.0.1:5000/file/list' can see the file you uploaded and click the needed file to download
-
- * Or 'http://127.0.0.1:5000/file/download/<filename>' to download
-
- * 'http://127.0.0.1:5000/file/delete/<filename>' to delete files
-
- * Open postman and 'http://127.0.0.1:5001/rebuild/<filename+node>' to rebuild node, one request for one file synchronization
- 
- 
- 
- 
- RAID 6 Parity
+# RAID 6 Parity
 -------------
 
 RAID 6 uses 2 parity techniques to allow for up to 2 disks to become
@@ -361,25 +272,4 @@ unreadable, an xor-based technique, and a Reed-Solomon-based one (which is
 based on Galois Fields).  As a way to explore these I built this simple
 program based on a PDF from Kernel.org:
 https://www.kernel.org/pub/linux/kernel/people/hpa/raid6.pdf
-
-Example output:
-
-    Original: 48 45 4c 4c 4f 
-    Parity:   42 31
-    
-    Missing Datum
-    48 45 4c 00 4f 
-    48 45 4c 4c 4f 
-    Pass: YES
-    
-    Missing Dataum and XOR Parity
-    00 45 4c 4c 4f 
-    48 45 4c 4c 4f 
-    Pass: YES
-    
-    Missing 2 Data
-    48 00 00 4c 4f 
-    48 45 4c 4c 4f 
-    Pass: YES
-
 
