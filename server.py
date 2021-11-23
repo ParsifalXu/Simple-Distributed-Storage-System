@@ -17,7 +17,7 @@ app = Flask(__name__)
 def index():
     return rt('./index.html')
 
-
+# upload files
 @app.route('/file/upload', methods=['POST'])
 def upload_part():  # receive an uploaded chunk
     task = request.form.get('task_id')  # obtain unique id
@@ -27,7 +27,7 @@ def upload_part():  # receive an uploaded chunk
     upload_file.save('./upload/%s' % filename)
     return rt('./index.html')
 
-
+# merge files
 @app.route('/file/merge', methods=['GET'])
 def upload_success():  # read chunk content and write into new file
     target_filename = request.args.get('filename')  # get uploaded file name
@@ -57,24 +57,23 @@ def upload_success():  # read chunk content and write into new file
     os.remove('./upload/' + target_filename)
     return rt('./index.html')
 
-
+# get file list
 @app.route('/file/list', methods=['GET'])
 def file_list():
-    # files = os.listdir('./upload/')  # 获取文件目录
     with open('./chunk.json', 'r') as f:
         data = json.load(f)
     f.close()
     files = data['file_list']
-    files = map(lambda x: x if isinstance(x, str) else x.encode(), files)  # 注意编码
+    files = map(lambda x: x if isinstance(x, str) else x.encode(), files)  # Note encode and decode
     return rt('./list.html', files=files)
 
-
+# download files
 @app.route('/file/download/<filename>', methods=['GET'])
 def file_download(filename):
     res = requests.get('http://127.0.0.1:5001/download/' + filename)
 
-    def send_chunk():  # 流式读取
-        # 添加一个节点读取
+    def send_chunk():  # stream read
+        # Add a node to read
         store_path = './upload/%s' % filename
         with open(store_path, 'rb') as target_file:
             while True:
@@ -85,20 +84,20 @@ def file_download(filename):
 
     return Response(send_chunk(), content_type='application/octet-stream')
 
-
+# delete files
 @app.route('/file/delete/<filename>', methods=['GET'])
 def file_delete(filename):
     res = requests.get('http://127.0.0.1:5001/delete/' + filename)
     print('%s has been deleted' %filename)
 
     file_size = nodeUpdate.get_file_size(filename)
-    # 先写死
+    # test case
     node_num = 1
     nodeUpdate.resource_update(node_num, filename, 0)
 
     return rt('./index.html')
 
-
+# receive files from nodes
 @app.route('/receive', methods = ['GET', 'POST'])
 def receive():
     data = request.files.get('file_content')
@@ -109,8 +108,8 @@ def receive():
     return storage_path
 
 
-error_times = 0
-
+# periodically ping each nodes
+error_times = 0 # global variables   the times of error happened
 def ping():
     for i in range(1, 5):
         try:

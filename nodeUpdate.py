@@ -71,7 +71,7 @@ def resource_update(node_num, filename, status):
 
 
 
-
+# obtain file size
 def get_file_size(filename):
     with open('./chunk.json', 'r') as f:
         data = json.load(f)

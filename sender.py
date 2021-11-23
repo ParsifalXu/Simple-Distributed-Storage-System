@@ -1,6 +1,7 @@
 import requests
 import json
 
+# send file to node
 def send(node, filename):
     server_node = 'http://127.0.0.1:500%s/save' %node
 
