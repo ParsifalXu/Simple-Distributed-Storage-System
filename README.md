@@ -16,23 +16,22 @@ You can explore the bullit from either:
 - Accommodate real files of arbitrary size, taking into account issues like RAID mapping, etc.
 - Support mutable files, taking into account update of the content, and consistency issues.
 - Support larger set of configurations
-- read or write bigsize fileo bject by chunk mode
-- recover <=2 disks
-- detect 1 corrupted disk
-- find which disk is corrupted
-- recover 2-disk case
-- mutable files
-- concurrent actual read/write
-- optimized and raw gf8 multiplication
-- data types can be text-only or arbitrary bytes
+- Read or write bigsize fileo bject by chunk mode
+- Recover <=2 disks
+- Detect 1 corrupted disk
+- Find which disk is corrupted
+- Mutable files
+- Concurrent actual read/write
+- Optimized and raw gf8 multiplication
+- Our support data types can be text-only or arbitrary bytes
 
 
 Basically it turns this:
-![btrfs_sub_list](upload/framework2.png)
+![sub_list](upload/framework2.png)
 
-* we set up a super node to interact with client
-and manage different request from users. 
-we have three replica nodes for each master node, as shown in the orange node and blue nodes surrounded by the dashed circle in the Fig. For nodes other than super node, we employ Redundant Array of Independent Disks 6(RAID 6) to improve storage performance or reduce redundancy, or both. Meanwhile, for the services of each node to be more efficient, super node maintain a node info.json to record each node as well as the resources it has to try to choose nodes with more resources to save files.
+* We set up a super node to interact with client and manage different request from users. 
+* We have three replica nodes for each master node, as shown in the orange node and blue nodes surrounded by the dashed circle in the Fig. For nodes other than super node, we employ Redundant Array of Independent Disks 6(RAID 6) to improve storage performance or reduce redundancy, or both. 
+* Meanwhile, for the services of each node to be more efficient, super node maintain a node info.json to record each node as well as the resources it has to try to choose nodes with more resources to save files.
 
 
 ## Installation Guide
@@ -238,13 +237,13 @@ read http://127.0.0.1:500{i}/ping/ content and render to browser,
 
 ## Storage
 
-store and access abstract “data objects” across storage nodes using RAID-6 for fault-tolerance
+Store and access abstract “data objects” across storage nodes using RAID-6 for fault-tolerance
 ```
 Usage:  Get into ./Nodes/node_1. node_2, node_3, node_4... as the same (you can only open 1 to 4 for test)
     
 open  'http://127.0.0.1:500%s/save' %node
 
-If no [node] is specified, save information into node_i filesystems.
+If [node] is specified, save information into node_i filesystems.
 
 node_info.json
   -h, --help                 display this message
@@ -255,8 +254,8 @@ node_info.json
 
 # Other Features 
 
-- mechanisms to determine failure of storage nodes
-- rebuild of the lost redundancy at a replacement storage node
+- Mechanisms to determine failure of storage nodes
+- Rebuild of the lost redundancy at a replacement storage node
 - RAID-6 data recovery
 - Analysis, synchronization mechanism and 
 - Disaster tolerance and recovery
