@@ -220,14 +220,7 @@ read http://127.0.0.1:500{i}/ping/ content and render to browser,
 
 <details markdown="1">
 <summary>whether the node is master node...</summary>
-* `master_node`:  field of node_info.json .
-*  "render 0 upload sucess and 1 for error occur"
 
-</details>
-
-
-<details markdown="1">
-<summary>whether the node is master node...</summary>
 * `master_node`:  field of node_info.json .
 *  "render 0 upload sucess and 1 for error occur"
 
