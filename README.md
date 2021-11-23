@@ -46,8 +46,7 @@ Anaconda is a library that includes Python and many useful packages, as well as 
 Follow the [official instrutions](https://www.anaconda.com/distribution/) of Anaconda to install. Once it has been successfully installed, run the following command at terminal:
 
 ```
-git clone https://github.com/GuluDeemo/CE7490-RAID6.git
-cd CE7490-RAID6
+git clone https://github.com/https://github.com/ParsifalXu/Simple-Distributed-Storage-System.git
 conda env create -f environment.yml
 ```
 
