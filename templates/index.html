@@ -55,14 +55,14 @@
             $('.progress-bar').css('width', '100%');
             $('.progress-bar').text('100%');
             $('.progress-bar').addClass('progress-bar-success');
-            $('.progress-bar').text('上传完成');
+            $('.progress-bar').text('Upload Successfully');
         });
 
         uploader.on('uploadError', function(file) { // If these are some error happening during uploading process, call this function
             $('.progress-bar').css('width', '100%');
             $('.progress-bar').text('100%');
             $('.progress-bar').addClass('progress-bar-danger');
-            $('.progress-bar').text('上传失败');
+            $('.progress-bar').text('Fail to upload');
         });
 
         uploader.on('uploadComplete', function(file) { // Whether the file is uploaded successful or not, call this function
