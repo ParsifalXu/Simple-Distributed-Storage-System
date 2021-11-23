@@ -205,13 +205,11 @@ read http://127.0.0.1:5001/receive/ content and render to browser,
 <summary>ping each nodes...</summary>
 
 The command `/file/receive/` refers to:
-read http://127.0.0.1:500{i}/ping/ content and render to browser, 
-* `i`: the bianry byte encoder from javascript encode it to form-data  .
-* `error_times`: global variables   the times of error happened
-*  " change status. 1 represents activate; 0 represents inactivate
-  find this i belongs to which master node
-  will not influence current service, do alarm
- "
+read http://127.0.0.1:500{i}/ping/ content and render to browser, this function would find this i belongs to which master node and will not influence current service, do alarm.
+* `i`: the node id .
+* `error_times`: global variables for the times of error happened
+*  " change status. 1 represents activate; 0 represents inactivate"
+  
 </details>
 
 
